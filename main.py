@@ -8,6 +8,11 @@ import random
 
 
 
+
+# test_2
+
+
+
 # init
 pygame.init()
 w = 600
