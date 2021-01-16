@@ -1,37 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@lukasroztomily 
-Learn Git and GitHub without any code!
-Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
-
-
-EnemigoPython
-/
-minesweeper-pygame
-1
-01
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-minesweeper-pygame/main.py /
-@EnemigoPython
-EnemigoPython Create main.py
-Latest commit 2958129 on 27 Aug 2020
- History
- 1 contributor
-314 lines (287 sloc)  9.99 KB
-  
 import pygame
 import math
 import random
