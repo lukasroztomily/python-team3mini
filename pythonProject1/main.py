@@ -2,6 +2,9 @@ import pygame
 import math
 import random
 
+#jenom nejaky random text
+
+
 # init
 pygame.init()
 w = 600
