@@ -3,16 +3,6 @@ import math
 import random
 
 
-# test
-
-
-
-
-
-# test_2
-
-
-
 # init
 pygame.init()
 w = 600
@@ -284,41 +274,6 @@ def reset():
             grid[x][y] = ''
 
 
-# game loop
-running = True
-playing = True
-bombs_loaded = False
-while running:
-    screen.fill(GREY)
-    draw_grid_lines()
-    draw_side_text()
-    draw_graphics()
-    mouseX, mouseY = pygame.mouse.get_pos()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                reset()
-        if event.type == pygame.MOUSEBUTTONDOWN and playing:
-            if mouseX < w and pygame.mouse.get_pressed() == (1, 0, 0):
-                gridX, gridY = find_grid_coords(mouseX, mouseY)
-                gridXY = gridX, gridY
-                if not bombs_loaded:
-                    load_bombs(gridXY)
-                    bombs_loaded = True
-                    start_time = pygame.time.get_ticks()
-                if gridXY not in discovered_squares:
-                    if gridXY in bomb_squares:
-                        win = False
-                        playing = False
-                        capture = ticking
-                    else:
-                        discovered_squares.append(gridXY)
-                        uncover_squares(gridX, gridY)
-                        spaces_remaining = update_grid()
-                        if spaces_remaining < 1:
-                            win = True
 #||
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -524,15 +479,6 @@ def options():
         pygame.display.update()
         clock.tick(60)
 
-
-            elif mouseX < w and pygame.mouse.get_pressed() == (0, 0, 1):
-                gridX, gridY = find_grid_coords(mouseX, mouseY)
-                gridXY = gridX, gridY
-                if gridXY not in discovered_squares:
-                    get_flag(gridXY)
-
-    pygame.display.update()
-    clock.tick(60)
 
 if __name__ == '__main__':
     main_menu()
