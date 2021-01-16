@@ -2,6 +2,12 @@ import pygame
 import math
 import random
 
+
+# test
+
+
+
+
 # init
 pygame.init()
 w = 600
