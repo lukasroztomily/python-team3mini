@@ -386,12 +386,6 @@ def reset(lenght_in):
             grid_[x][y] = ''
 
 
-#||
-def draw_text(text, font, color, surface, x, y):
-    textobj = font.render(text, 1, color)
-    textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
-    surface.blit(textobj, textrect)
 
 
 class button():
@@ -450,7 +444,7 @@ class button():
 # ||
 def game():
     global running, playing, bombs_loaded, capture, grid_from_settings
-    print(grid_from_settings)
+
     # game loop
     running = True
     playing = True
@@ -581,14 +575,12 @@ def options():
             game()
         elif medium.draw_button():
             grid_from_settings = 14
-            game()
-            print(grid_from_settings)            			
+            game()           			
         elif high.draw_button():
             grid_from_settings = 16
             game()
         else:
             grid_from_settings = 12
-        print(grid_from_settings)
 
 
 
