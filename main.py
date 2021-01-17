@@ -6,9 +6,11 @@ import random
 # init
 pygame.init()
 w = 600
+grid_from_settings = 12 
+print(grid_from_settings)
 sidebar = 200
-grid_length = 12
-grid_from_settings = 12 # 8 / 12 / 20
+# 8 / 12 / 20
+grid_length = 14
 grid_length = grid_from_settings
 num_of_bombs = 34
 flags = []
@@ -49,23 +51,34 @@ colour_number = {
 # create grid
 num_of_squares = int(math.pow(grid_length, 2))
 spaces_remaining = num_of_squares - num_of_bombs
-grid = [
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '']
-]
+grid = []
+grid_help = []
 
 
-def load_bombs(avoid):
+
+def grindgen (gird_in):
+    global grid, grid_help
+
+    for i in range(gird_in):
+        grid_help.append('')
+
+    for i in range(gird_in):
+        grid.append(grid_help)
+        
+    return grid
+
+
+
+
+def load_bombs(avoid, gird_in):
+    grid_length = gird_in
+    global grid, grid_help
+    for i in range(gird_in):
+        grid_help.append('')
+
+    for i in range(gird_in):
+        grid.append(grid_help)
+		
     remaining = num_of_bombs
     x = 0
     y = 0
@@ -85,7 +98,8 @@ def load_bombs(avoid):
             y += 1
 
 
-def draw_grid_lines():
+def draw_grid_lines(lenght_in):
+    grid_length = lenght_in
     for line in range(grid_length - 1):
         line_start = round((w / grid_length) * (line + 1))
         pygame.draw.line(screen, BLACK, (line_start, 0), (line_start, w), 6)
@@ -98,12 +112,12 @@ def draw_grid_lines():
     pygame.draw.line(screen, BLACK, (0, w), (w, w), 6)
 
 
-def draw_side_text():
+def draw_side_text(lenght_in):
     global ticking, capture
     text = "minesweeper"
     draw_text = text_font.render(text, True, MAROON)
     screen.blit(draw_text, (w + 30, 20))
-    text = f"{grid_length} x {grid_length}"
+    text = f"{lenght_in} x {lenght_in}"
     draw_text = text_font.render(text, True, MAROON)
     screen.blit(draw_text, (w + 30, 40))
     text = f"{spaces_remaining} spaces remaining"
@@ -147,7 +161,8 @@ def draw_side_text():
 
 
 # find what square the mouse is in
-def find_grid_coords(x, y):
+def find_grid_coords(x, y, lenght_in):
+    grid_length = lenght_in
     found = False
     gridX = 0
     gridY = 0
@@ -169,18 +184,20 @@ def find_grid_coords(x, y):
         gridY += 1
 
 
-def update_grid():
+def update_grid(lenght_in):
+    grid_length = lenght_in
+    grid_ = grindgen(grid_length)
     global flags, num_of_flags
     for x in range(grid_length):
         for y in range(grid_length):
             xy = x, y
             if xy in discovered_squares and xy not in bomb_squares:
-                grid[x][y] = "O"
+                grid_[x][y] = "O"
                 if xy in flags:
                     flags.remove(xy)
                     num_of_flags -= 1
     remaining = 0
-    for row in grid:
+    for row in grid_:
         for item in row:
             if item == '':
                 remaining += 1
@@ -210,7 +227,8 @@ def corner_number(x, y):
 
 
 # draw graphics
-def draw_graphics():
+def draw_graphics(lenght_in):
+    grid_length = lenght_in
     size = round((w / grid_length) - 6)
     for xy in discovered_squares:
         x = xy[0]
@@ -240,10 +258,10 @@ def draw_graphics():
             draw_x = round(((w / grid_length) * x) + 5)
             draw_y = round(((w / grid_length) * y) + 5)
             screen.blit(bomb_img, (draw_x, draw_y))
-
-
+            
 # find neighbouring empty squares
-def uncover_squares(x, y):
+def uncover_squares(x, y, lenght_in):
+    grid_length = lenght_in
     xy = x, y
     neighbours = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1), (x + 1, y + 1), (x + 1, y - 1), (x - 1, y - 1),
                   (x - 1, y + 1)]
@@ -254,10 +272,12 @@ def uncover_squares(x, y):
                 break
             elif neighbour not in discovered_squares and neighbour not in bomb_squares:
                 discovered_squares.append(neighbour)
-                uncover_squares(neighbour[0], neighbour[1])
+                uncover_squares(neighbour[0], neighbour[1], grid_length)
 
 
-def reset():
+def reset(lenght_in):
+    grid_length = lenght_in
+    grid_ = grindgen(grid_length)
     global start_time, playing, bombs_loaded, num_of_flags, spaces_remaining, win
     start_time = 0 
     playing = True
@@ -271,7 +291,7 @@ def reset():
     win = False
     for x in range(grid_length):
         for y in range(grid_length):
-            grid[x][y] = ''
+            grid_[x][y] = ''
 
 
 #||
@@ -342,8 +362,8 @@ class button():
 
 # ||
 def game():
-    global running, playing, bombs_loaded, capture
-
+    global running, playing, bombs_loaded, capture, grid_from_settings
+    print(grid_from_settings)
     # game loop
     running = True
     playing = True
@@ -352,9 +372,9 @@ def game():
     while running:
         screen.fill(GREY)
 
-        draw_grid_lines()
-        draw_side_text()
-        draw_graphics()
+        draw_grid_lines(grid_from_settings)
+        draw_side_text(grid_from_settings)
+        draw_graphics(grid_from_settings)
         
         mouseX, mouseY = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -365,13 +385,13 @@ def game():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    reset()
+                    reset(grid_from_settings)
             if event.type == pygame.MOUSEBUTTONDOWN and playing:
                 if mouseX < w and pygame.mouse.get_pressed() == (1, 0, 0):
-                    gridX, gridY = find_grid_coords(mouseX, mouseY)
+                    gridX, gridY = find_grid_coords(mouseX, mouseY, grid_from_settings)
                     gridXY = gridX, gridY
                     if not bombs_loaded:
-                        load_bombs(gridXY)
+                        load_bombs(gridXY, grid_from_settings)
                         bombs_loaded = True
                         start_time = pygame.time.get_ticks()
                     if gridXY not in discovered_squares:
@@ -381,8 +401,8 @@ def game():
                             capture = ticking
                         else:
                             discovered_squares.append(gridXY)
-                            uncover_squares(gridX, gridY)
-                            spaces_remaining = update_grid()
+                            uncover_squares(gridX, gridY, grid_from_settings)
+                            spaces_remaining = update_grid(grid_from_settings)
                             if spaces_remaining < 1:
                                 win = True
                                 playing = False
@@ -440,7 +460,7 @@ def main_menu():
 
 def options():
     global grid_from_settings
-
+    
     # Creating Buttons
     small = button(w/2, w/2-100, 'Small')
     medium = button(w/2, w/2, 'Medium')
@@ -449,7 +469,8 @@ def options():
 
     running = True
     while running:
-
+		
+        
         screen.fill((0,0,0))
 
         # Text Options
@@ -457,14 +478,18 @@ def options():
 
         # Actions when button is clicked
         if small.draw_button():
-            grid_from_settings = 8
+            grid_from_settings = 12			 
             game()
-        if medium.draw_button():
+        elif medium.draw_button():
+            grid_from_settings = 14
+            game()
+            print(grid_from_settings)            			
+        elif high.draw_button():
+            grid_from_settings = 16
+            game()
+        else:
             grid_from_settings = 12
-            game()
-        if high.draw_button():
-            grid_from_settings = 20
-            game()
+        print(grid_from_settings)
 
 
 
