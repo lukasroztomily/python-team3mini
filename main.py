@@ -53,8 +53,8 @@ colour_number = {
 }
 
 # create grid
-num_of_squares = int(math.pow(grid_length, 2))
-spaces_remaining = num_of_squares - num_of_bombs
+#num_of_squares = int(math.pow(grid_length, 2))
+#spaces_remaining = num_of_squares - num_of_bombs
 grid = []
 grid_help = []
 
@@ -87,7 +87,7 @@ def load_bombs(avoid, gird_in):
 
     for i in range(gird_in):
         grid.append(grid_help)
-		
+    num_of_squares = int(math.pow(grid_length, 2))		
     remaining = num_of_bombs
     x = 0
     y = 0
@@ -182,16 +182,16 @@ def draw_side_text(lenght_in):
     num_of_squares = int(math.pow(lenght_in, 2))
     num_of_bombs = lenght_in *3
     spaces_remaining = num_of_squares - num_of_bombs
-    text = "HLEDÃNÃ MIN"
+    text = "MINESWEEPER"
     draw_text = text_font.render(text, True, MAROON)
     screen.blit(draw_text, (w + 30, 20))
-    text = f"{lenght_in} x {lenght_in} ROZMÄšRY"
+    text = f"{lenght_in} x {lenght_in} ROZMERY"
     draw_text = text_font.render(text, True, MAROON)
     screen.blit(draw_text, (w + 30, 40))
     text = f"{spaces_remaining} POLE"
     draw_text = text_font.render(text, True, BLACK)
     screen.blit(draw_text, (w + 20, 80))
-    text = f"{num_of_bombs} POÄŒET BOMB"
+    text = f"{num_of_bombs} POCET BOMB"
     draw_text = text_font.render(text, True, BLACK)
     screen.blit(draw_text, (w + 20, 110))
     ticking = str(round((pygame.time.get_ticks() - start_time) / 1000))
@@ -203,10 +203,9 @@ def draw_side_text(lenght_in):
         text = "0"
     draw_text = text_font.render(text, True, BLACK)
     screen.blit(draw_text, (w + 80, 150))
-    text = "novÃ¡ hra - mezernÃ­k"
+    text = "nova hra - mezernik"
     draw_text = text_font.render(text, True, BLACK)
     screen.blit(draw_text, (w + 30, 560))
-    text = "Release"
     text = "Team 03"
     draw_text = text_font.render(text, True, BLACK)
     screen.blit(draw_text, (w + 30, 580))
@@ -219,10 +218,10 @@ def draw_side_text(lenght_in):
         screen.blit(draw_text, (w + 20, 220))
     if not playing:
         if win:
-            text = "VYHRÃL JSI!"
+            text = "WIN!"
             text_colour = GREEN
         else:
-            text = "PROHRÃL JSI!"
+            text = "LOSE"
             text_colour = MAROON
         draw_text = text_font.render(text, True, text_colour)
         screen.blit(draw_text, (w + 30, 250))
@@ -292,10 +291,10 @@ def get_flag(xy):
     global flags, num_of_flags
     if xy in flags:
         flags.remove(xy)
-        num_of_flags -= 2
+        num_of_flags -= 1
     else:
         flags.append(xy)
-        num_of_flags += 2
+        num_of_flags += 1
 
 
 # how many neighbours
@@ -332,15 +331,21 @@ def draw_graphics(lenght_in):
         for xy in flags:
             x = xy[0]
             y = xy[1]
-            draw_x = round(((w / grid_length) * x) + 8)
-            draw_y = round(((w / grid_length) * y) + 8)
+            draw_x = round(((w / grid_length) * x) + 6)
+            draw_y = round(((w / grid_length) * y) + 6)
             screen.blit(flag_img, (draw_x, draw_y))
     else:
         for xy in bomb_squares:
             x = xy[0]
             y = xy[1]
-            draw_x = round(((w / grid_length) * x) + 5)
-            draw_y = round(((w / grid_length) * y) + 5)
+            if grid_length == 16:
+                help_ = -2
+            if grid_length == 14:
+                help_ = 3                
+            else:
+                 help_ = 5
+            draw_x = round(((w / grid_length) * x) + help_)
+            draw_y = round(((w / grid_length) * y) + help_)
             screen.blit(bomb_img, (draw_x, draw_y))
             
 # find neighbouring empty squares
@@ -363,6 +368,8 @@ def uncover_squares(x, y, lenght_in):
 def reset(lenght_in):
     grid_length = lenght_in
     grid_ = grindgen(grid_length)
+    num_of_squares = int(math.pow(lenght_in, 2))
+    num_of_bombs = lenght_in *3    
     global start_time, playing, bombs_loaded, num_of_flags, spaces_remaining, win
     start_time = 0 
     playing = True
@@ -501,7 +508,7 @@ def game():
                                 win_sound.play() # new
 
                 elif mouseX < w and pygame.mouse.get_pressed() == (0, 0, 1):
-                    gridX, gridY = find_grid_coords(mouseX, mouseY)
+                    gridX, gridY = find_grid_coords(mouseX, mouseY, grid_from_settings)
                     gridXY = gridX, gridY
                     if gridXY not in discovered_squares:
                         get_flag(gridXY)
